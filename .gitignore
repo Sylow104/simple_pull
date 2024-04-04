@@ -3,3 +3,4 @@
 !LICENSE
 !*.ts
 !.gitignore
+!webpack.config.js

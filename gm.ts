@@ -10,8 +10,8 @@ interface to_use {
 	onerror: (r: any) => void;
 }
 
-export async function pull(url_to_pull: string, headers? : HeadersInit): Promise<string> {
-	return await new Promise((resolve, fail) => {
+export function pull(url_to_pull: string, headers? : HeadersInit): Promise<string> {
+	return new Promise((resolve, fail) => {
 		GM_xmlhttpRequest({
 			url: url_to_pull,
 			method: "GET",
@@ -29,12 +29,12 @@ export async function pull(url_to_pull: string, headers? : HeadersInit): Promise
 export async function multi_pull(urls : string[], headers? : HeadersInit)
 {
 	const v_1 = await Promise.allSettled(urls.map(async (v, i, a) => {
-		return await pull(v, headers);
+		return pull(v, headers);
 	}));
 	return v_1.map((q, j, b) => {
 		return new Promise<string>((resolve, reject) => {
 			if (q.status === 'fulfilled') {
-				console.log(q.status + `-` + q.value);
+				//console.log(q.status + `-` + q.value);
 				resolve(q.value);
 			} else {
 				reject(q.status + `-` + q.reason);

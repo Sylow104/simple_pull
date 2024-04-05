@@ -10,27 +10,45 @@ interface to_use {
 	onerror: (r: any) => void;
 }
 
-export function pull(url_to_pull: string, headers? : HeadersInit): Promise<string> {
+export function pull<T>(info : pull_i<T>): Promise<string> {
+	let _url = info.url_gen(info.obj);
 	return new Promise((resolve, fail) => {
 		GM_xmlhttpRequest({
-			url: url_to_pull,
+			url: _url,
 			method: "GET",
-			headers : headers,
+			headers : info.headers,
 			onload: async (r) => {
 				resolve(r.responseText);
 			},
 			onerror: async (r) => {
-				fail(`unable to pull ${url_to_pull}`);
+				fail(`unable to pull ${_url}`);
 			}
 		});
 	});
 }
 
-export async function multi_pull(urls : string[], headers? : HeadersInit)
+export interface pull_i<T>
 {
-	const v_1 = await Promise.allSettled(urls.map(async (v, i, a) => {
-		return pull(v, headers);
-	}));
+	obj : T;
+	url_gen : (a : T) => string;
+	headers? : HeadersInit;
+};
+
+export async function multi_pull<T>(objs : T[], url_gen : (a : T) => string,  headers? : HeadersInit)
+{
+	return await Promise.allSettled(objs.map(async (v, i, a) => {
+		return pull({obj : v, url_gen : url_gen, headers : headers});
+	})).then((v) => {
+		return v.map((q, j, b) => {
+			if (q.status === 'fulfilled') {
+				return q.value;
+			} else {
+				return undefined;
+			};
+		});
+	});
+
+	/*
 	return v_1.map((q, j, b) => {
 		return new Promise<string>((resolve, reject) => {
 			if (q.status === 'fulfilled') {
@@ -41,4 +59,5 @@ export async function multi_pull(urls : string[], headers? : HeadersInit)
 			}
 		});
 	});
+	*/
 };

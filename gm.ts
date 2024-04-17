@@ -34,6 +34,8 @@ export interface pull_i<T>
 	headers? : HeadersInit;
 };
 
+
+// multi pull could be converted to an single domain, multiple requests to various sublets instead TODO
 export async function multi_pull<T>(objs : T[], url_gen : (a : T) => string,  headers? : HeadersInit)
 {
 	return await Promise.allSettled(objs.map(async (v, i, a) => {

@@ -27,13 +27,45 @@ export function pull<T>(info : pull_i<T>): Promise<string> {
 	});
 }
 
+export async function pull2(info : pull2_i) : Promise<string>
+{
+	console.log(`pull2: pulling ${info.url} with ${info.method}`);
+	return await new Promise((p, f) => {
+		GM_xmlhttpRequest({
+			url : info.url,
+			method : info.method ?? PULL_METHOD.GET,
+			headers : info.headers,
+			onload: async (r) => {
+				console.log(`response text: ${r.responseText}`);
+				p(r.responseText);
+			},
+			onerror: async (r) => {
+				f(`unable to pull ${info.url}`);
+			}
+		});
+	});
+};
+
+export enum PULL_METHOD
+{
+	GET = "GET",
+	POST = "POST",
+	PUT = "PUT"
+};
+
+export class pull2_i
+{
+	url : string;
+	method? : PULL_METHOD;
+	headers? : HeadersInit
+};
+
 export interface pull_i<T>
 {
 	obj : T;
 	url_gen : (a : T) => string;
 	headers? : HeadersInit;
 };
-
 
 // multi pull could be converted to an single domain, multiple requests to various sublets instead TODO
 export async function multi_pull<T>(objs : T[], url_gen : (a : T) => string,  headers? : HeadersInit)

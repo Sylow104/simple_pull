@@ -3,7 +3,11 @@ import { pull2 } from "./gm";
 await Promise.all(
 	["https://google.com", "https://reddit.com", "http://jasdlw.com"]
 	.map((v) => {
-		return pull2({url : v});
+		return pull2({url : v})
+			.catch((a) => {
+				console.log(a);
+				return undefined;
+			});
 	})).then((q) => {
 		q.forEach((r) => {
 			const parser = new DOMParser();

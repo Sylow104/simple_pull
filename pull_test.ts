@@ -1,11 +1,16 @@
-import { multi_pull } from "./gm";
+import { pull2 } from "./gm";
 
-multi_pull(["https://google.com", "https://reddit.com", "http://jasdlw.com"],
-	(a) => {return a})
-	.then((v) => {v.forEach((q, j, b) => {
+await Promise.all(
+	["https://google.com", "https://reddit.com", "http://jasdlw.com"]
+	.map((v) => {
+		return pull2({url : v});
+	})).then((q) => {
+		q.forEach((r) => {
 			const parser = new DOMParser();
-			let doc = parser.parseFromString(q, 'text/html');
+			let doc = parser.parseFromString(r, 'text/html');
 			//console.log(`checking out - ${a}`);
 			console.log(doc);
-		})})
-	.catch(console.log);
+		});
+	});
+
+console.log(`finished pulling everything`);

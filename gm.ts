@@ -23,6 +23,7 @@ export async function pull2(info : pull2_i) : Promise<string>
 				p(r.responseText);
 			},
 			onerror: async (r) => {
+				console.log(`unable to pull ${info.url}`);
 				f(`unable to pull ${info.url}`);
 			}
 		});

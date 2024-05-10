@@ -1,6 +1,10 @@
 // greasemonkey variant
 
 declare function GM_xmlhttpRequest(a: to_use): void;
+declare namespace GM
+{
+	function xmlHttpRequest(a : to_use) : void;
+};
 
 interface to_use {
 	url: string;
@@ -10,6 +14,7 @@ interface to_use {
 	onload: (r: any) => void;
 	onerror: (r: any) => void;
 	ontimeout : (r: any) => void;
+	nocache : boolean;
 }
 
 export async function pull2(info : pull2_i) : Promise<string>
@@ -31,6 +36,7 @@ export async function pull2(info : pull2_i) : Promise<string>
 				console.log(`timed out`);
 				f(`timed out on ${info.url}`);
 			},
+			nocache : true,
 		});
 	});
 };

@@ -9,6 +9,7 @@ interface to_use {
 	data? : string;
 	onload: (r: any) => void;
 	onerror: (r: any) => void;
+	ontimeout : (r: any) => void;
 }
 
 export async function pull2(info : pull2_i) : Promise<string>
@@ -25,7 +26,11 @@ export async function pull2(info : pull2_i) : Promise<string>
 			onerror: async (r) => {
 				console.log(`unable to pull ${info.url}`);
 				f(`unable to pull ${info.url}`);
-			}
+			},
+			ontimeout: async (r) => {
+				console.log(`timed out`);
+				f(`timed out on ${info.url}`);
+			},
 		});
 	});
 };
